@@ -88,7 +88,7 @@ class UserController {
 
       jwt.verify(token, jwttoken, async (err, decodedToken) => {
         if (err) {
-          return res.status(401).json({ status: 401, error: 'Token inválido' });
+          return res.json({  error: 'Token inválido' });
         }
         const updatedUser = await UserDataBaseService.updateDBUser(
           {
@@ -97,24 +97,24 @@ class UserController {
           },
           parseInt(id)
         );
-        return res.status(200).json({ status: 200, updatedUser: updatedUser });
+        return res.json({  updatedUser: updatedUser });
       });
     } catch (error) {
-      return res.status(401).json({ status: 401, error: error });
+      return res.json({  error: error });
     }
   }
 
   async deleteUser(req: Request, res: Response) {
     const id = req.params.id;
     if (!id) {
-      return res.status(401).json({ status: 401, error: 'Faltou o ID' });
+      return res.json({  error: 'Faltou o ID' });
     }
 
     try {
       const token = req.headers.authorization?.split(' ')[1];
 
       if (!token) {
-        return res.status(401).json({ status: 401, error: 'Token não fornecido' });
+        return res.json({  error: 'Token não fornecido' });
       }
 
       if (!jwttoken) {
@@ -123,17 +123,17 @@ class UserController {
 
       jwt.verify(token, jwttoken, async (err, decodedToken) => {
         if (err) {
-          return res.status(401).json({ status: 401, error: 'Token inválido' });
+          return res.json({  error: 'Token inválido' });
         }
         const response = await UserDataBaseService.deleteDBUser(parseInt(id));
         if (response) {
-          return res.status(200).json({ status: 200, message: "Usuário deletado com sucesso" });
+          return res.json({  message: "Usuário deletado com sucesso" });
         }
 
       });
     } catch (error) {
       console.log(error);
-      return res.status(401).json({ status: 401, error: error });
+      return res.json({  error: error });
     }
   }
 }

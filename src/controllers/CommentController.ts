@@ -15,23 +15,23 @@ class CommentController {
         const body = req.body;
         console.log(body)
         if (!body.content || !body.postId) {
-            return res.status(401).json({ status: 401, error: 'Falta parâmetros' });
+            return res.json({  error: 'Falta parâmetros' });
         }
 
         try {
             const token = req.headers.authorization?.split(' ')[1];
 
             if (!token) {
-                return res.status(401).json({ status: 401, error: 'Token não fornecido' });
+                return res.json({  error: 'Token não fornecido' });
             }
 
             if (!jwttoken) {
-                return res.status(500).json({ status: 500, error: 'Chave secreta não definida' });
+                return res.json({  error: 'Chave secreta não definida' });
             }
 
             jwt.verify(token, jwttoken, async (err, decodedToken) => {
                 if (err) {
-                    return res.status(401).json({ status: 401, error: 'Token inválido' });
+                    return res.json({  error: 'Token inválido' });
                 }
 
                 const decoded = decodedToken as DecodedToken;
@@ -48,10 +48,10 @@ class CommentController {
                     }
                 });
 
-                return res.status(200).json({ status: 200, newComment: newComment });
+                return res.json({  newComment: newComment });
             });
         } catch (error) {
-            return res.status(401).json({ status: 401, error: error });
+            return res.json({  error: error });
         }
     }
     async getAllComment(req: Request, res: Response) {
@@ -60,24 +60,24 @@ class CommentController {
             const token = req.headers.authorization?.split(' ')[1];
 
             if (!token) {
-                return res.status(401).json({ status: 401, error: 'Token não fornecido' });
+                return res.json({  error: 'Token não fornecido' });
             }
 
             if (!jwttoken) {
-                return res.status(500).json({ status: 500, error: 'Chave secreta não definida' });
+                return res.json({  error: 'Chave secreta não definida' });
             }
 
             jwt.verify(token, jwttoken, async (err, decodedToken) => {
                 if (err) {
-                    return res.status(401).json({ status: 401, error: 'Token inválido' });
+                    return res.json({  error: 'Token inválido' });
                 }
 
                 const comments = await CommentService.getComments();
 
-                return res.status(200).json({ status: 200, comments: comments });
+                return res.json({  comments: comments });
             });
         } catch (error) {
-            return res.status(401).json({ status: 401, error: error });
+            return res.json({  error: error });
         }
     }
 
@@ -87,36 +87,36 @@ class CommentController {
             const token = req.headers.authorization?.split(' ')[1];
 
             if (!token) {
-                return res.status(401).json({ status: 401, error: 'Token não fornecido' });
+                return res.json({  error: 'Token não fornecido' });
             }
 
             if (!jwttoken) {
-                return res.status(500).json({ status: 500, error: 'Chave secreta não definida' });
+                return res.json({  error: 'Chave secreta não definida' });
             }
 
             jwt.verify(token, jwttoken, async (err, decodedToken) => {
                 if (err) {
-                    return res.status(401).json({ status: 401, error: 'Token inválido' });
+                    return res.json({  error: 'Token inválido' });
                 }
 
                 const comments = await CommentService.getCommentsByUserId(parseInt(id));
 
-                return res.status(200).json({ status: 200, comments: comments });
+                return res.json({  comments: comments });
             });
         } catch (error) {
-            return res.status(401).json({ status: 401, error: error });
+            return res.json({  error: error });
         }
     }
     async updateComment(req: Request, res: Response) {
         const id = req.params.id;
         if (!id) {
-            return res.status(401).json({ status: 401, error: "Faltou o ID" });
+            return res.json({  error: "Faltou o ID" });
         }
 
         const body = req.body;
 
         if (!body.content) {
-            return res.status(401).json({ status: 401, error: "Falta parâmetros" });
+            return res.json({  error: "Falta parâmetros" });
         }
 
         try {
@@ -126,26 +126,26 @@ class CommentController {
                 },
                 parseInt(id)
             );
-            return res.status(200).json({ status: 200, updatedUser: updatedComment });
+            return res.json({  updatedUser: updatedComment });
         }
         catch (error) {
-            return res.status(401).json({ status: 401, error: error });
+            return res.json({  error: error });
         }
     }
     async deleteComment(req: Request, res: Response) {
         const id = req.params.id;
         if (!id) {
-            return res.status(401).json({ status: 401, error: "Faltou o ID" });
+            return res.json({  error: "Faltou o ID" });
         }
 
         try {
             const response = await CommentService.deleteComment(parseInt(id));
             if (response) {
-                return res.status(200).json({ status: 200, message: "Comentário deletado com sucesso" });
+                return res.json({  message: "Comentário deletado com sucesso" });
             }
         } catch (error) {
             console.log(error);
-            return res.status(401).json({ status: 401, error: error });
+            return res.json({  error: error });
         }
     }
 }
