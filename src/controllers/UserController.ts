@@ -16,24 +16,24 @@ class UserController {
       const token = req.headers.authorization?.split(' ')[1];
 
       if (!token) {
-        return res.status(401).json({ status: 401, error: 'Token não fornecido' });
+        return res.json({ error: 'Token não fornecido' });
       }
 
       if (!jwttoken) {
-        return res.status(500).json({ status: 500, error: 'Chave secreta não definida' });
+        return res.json({ error: 'Chave secreta não definida' });
       }
 
       jwt.verify(token, jwttoken, async (err, decodedToken) => {
         if (err) {
-          return res.status(401).json({ status: 401, error: 'Token inválido' });
+          return res.json({ error: 'Token inválido' });
         }
 
         const users = await UserDataBaseService.listDBUsers();
-        return res.status(200).json({ status: 200, users: users });
+        return res.json({ users: users });
       });
     } catch (error) {
       console.log(error);
-      return res.status(401).json({ status: 401, error: error });
+      return res.json({ error: error });
     }
   }
 
@@ -41,13 +41,13 @@ class UserController {
     const body = req.body;
 
     if (!body.email || !body.name || !body.password) {
-      return res.status(401).json({ status: 401, error: 'Falta parâmetros' });
+      return res.json({ error: 'Falta parâmetros' });
     }
 
     const hashPassword = await generateHash(body.password);
 
     if (!hashPassword) {
-      return res.status(401).json({ status: 401, error: 'Erro ao criptografar senha ...' });
+      return res.json({ error: 'Erro ao criptografar senha ...' });
     }
 
     try {
@@ -56,30 +56,30 @@ class UserController {
         email: body.email,
         password: hashPassword as string
       });
-      return res.status(200).json({ status: 200, newuser: newuser });
+      return res.json({ newuser: newuser });
 
     } catch (error) {
-      return res.status(401).json({ status: 401, error: error });
+      return res.json({ error: error });
     }
   }
 
   async updateUser(req: Request, res: Response) {
     const id = req.params.id;
     if (!id) {
-      return res.status(401).json({ status: 401, error: 'Faltou o ID' });
+      return res.json({ error: 'Faltou o ID' });
     }
 
     const { name, email } = req.body;
     console.log(req.body)
     if (!email || !name) {
-      return res.status(401).json({ status: 401, error: 'Falta parâmetros' });
+      return res.json({ error: 'Falta parâmetros' });
     }
 
     try {
       const token = req.headers.authorization?.split(' ')[1];
 
       if (!token) {
-        return res.status(401).json({ status: 401, error: 'Token não fornecido' });
+        return res.json({ error: 'Token não fornecido' });
       }
 
       if (!jwttoken) {

@@ -12,7 +12,7 @@ class AuthController {
         const body = req.body;
 
         if (!body.email || !body.password) {
-            return res.status(401).json({status: 401, error: 'Falta parâmetros' });
+           return res.json({ error: 'Falta parâmetros' });
         }
 
         try {
@@ -22,24 +22,24 @@ class AuthController {
             });
 
             if (!user) {
-                return res.status(401).json({status: 401, error: 'Usuário não encontrado' });
+                return res.json({ error: 'Usuário não encontrado' });
             }
 
             const isPasswordValid = await validateHash(body.password, user.password);
             
             if (!isPasswordValid) {
-                return res.status(401).json({status: 401, error: 'Senha incorreta' });
+                return res.json({ error: 'Senha incorreta' });
             }
             if (!jwttoken) {
-                return res.status(500).json({status: 500, error: 'Chave secreta não definida' });
+                return res.json({status: 500, error: 'Chave secreta não definida' });
             }
             const token = jwt.sign({ userId: user.id }, jwttoken, {
                 expiresIn: '1h',
             });
 
-            return res.json({ status:200, accessToken: token });
+            return res.json({ status: "Usuário authenticado" });
         } catch (error) {
-            return res.status(401).json({status: 401, error: error });
+            return res.json({status: "error"});
         }
     }
 
